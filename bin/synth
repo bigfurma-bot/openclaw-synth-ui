@@ -1,0 +1,149 @@
+#!/usr/bin/env node
+
+/**
+ * SYNTH UI CLI - Command line interface for SYNTH UI
+ * Usage: synth [command]
+ * Commands:
+ *   start    - Start the SYNTH UI server
+ *   restart  - Restart the SYNTH UI server  
+ *   stop     - Stop the SYNTH UI server
+ *   status   - Check if SYNTH UI is running
+ *   --reboot - Restart the SYNTH UI server (using the exact command from user)
+ *   help     - Show this help message
+ */
+
+import { execSync } from 'child_process';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
+
+// Path to the SYNTH UI server script
+const SYNTH_DIR = '/home/prime/documents/workspace/synth-ui';
+const SERVER_SCRIPT = join(SYNTH_DIR, 'server', 'index.js');
+const ENV_FILE = join(SYNTH_DIR, '.env');
+const LOG_FILE = '/tmp/synth_restart.log';
+
+function showHelp() {
+  console.log(`
+SYNTH UI CLI - Command line interface for SYNTH UI
+
+Usage: synth [command]
+
+Commands:
+  start    - Start the SYNTH UI server
+  restart  - Restart the SYNTH UI server  
+  stop     - Stop the SYNTH UI server
+  status   - Check if SYNTH UI is running
+  --reboot - Restart the SYNTH UI server (using the exact command from user)
+  help     - Show this help message
+`);
+}
+
+function startServer() {
+  try {
+    // Check if .env exists, if not create it from config
+    if (!existsSync(ENV_FILE)) {
+      const configPath = join(SYNTH_DIR, 'config.json');
+      if (existsSync(configPath)) {
+        const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+        let gatewayToken = process.env.GATEWAY_TOKEN || '';
+        
+        if (!gatewayToken && process.env.HOME) {
+          try {
+            const openclawConfig = JSON.parse(readFileSync(
+              join(process.env.HOME, '.openclaw', 'openclaw.json'), 'utf-8'
+            ));
+            gatewayToken = openclawConfig.gateway?.token || '';
+          } catch (e) {
+            // Ignore error
+          }
+        }
+        
+        const envContent = `GATEWAY_TOKEN=${gatewayToken}\n`;
+        writeFileSync(ENV_FILE, envContent);
+        console.log('Created .env file from configuration');
+      }
+    }
+
+    // Start the server in background using nohup (same as user's command)
+    execSync(`nohup node --env-file=${ENV_FILE} ${SERVER_SCRIPT} > ${LOG_FILE} 2>&1 &`, { stdio: 'ignore' });
+    console.log('SYNTH UI server started');
+    console.log('Server running at http://localhost:9999');
+    console.log(`Logs available at: ${LOG_FILE}`);
+  } catch (error) {
+    console.error('Failed to start SYNTH UI:', error.message);
+    process.exit(1);
+  }
+}
+
+function stopServer() {
+  try {
+    // Kill any node processes running the synth server (same as user's command)
+    execSync('pkill -f "node.*server/index.js" || true', { stdio: 'ignore' });
+    console.log('SYNTH UI server stopped');
+  } catch (error) {
+    console.log('SYNTH UI server was not running');
+  }
+}
+
+function restartServer() {
+  console.log('Restarting SYNTH UI server...');
+  stopServer();
+  // Wait a moment for clean shutdown
+  setTimeout(startServer, 2000);
+}
+
+function rebootServer() {
+  // Execute the exact command provided by the user
+  console.log('Rebooting SYNTH UI server using user-provided command...');
+  try {
+    execSync(`kill $(lsof -ti:9999) 2>/dev/null; sleep 1; cd ${SYNTH_DIR} && nohup node --env-file=.env server/index.js > /tmp/synth_restart.log 2>&1 &`, { stdio: 'ignore' });
+    console.log('SYNTH UI server rebooted successfully');
+    console.log('Server running at http://localhost:9999');
+    console.log('Logs available at: /tmp/synth_restart.log');
+  } catch (error) {
+    console.error('Failed to reboot SYNTH UI:', error.message);
+    process.exit(1);
+  }
+}
+
+function showStatus() {
+  try {
+    // Check if port 9999 is in use (similar to user's approach)
+    execSync('lsof -ti:9999', { stdio: 'ignore' });
+    console.log('SYNTH UI is running');
+    console.log('Server running at http://localhost:9999');
+  } catch (error) {
+    console.log('SYNTH UI is not running');
+  }
+}
+
+// Main CLI logic
+const command = process.argv[2];
+
+switch (command) {
+  case 'start':
+    startServer();
+    break;
+  case 'stop':
+    stopServer();
+    break;
+  case 'restart':
+    restartServer();
+    break;
+  case '--reboot':
+    // Exact command from user as requested
+    rebootServer();
+    break;
+  case 'status':
+    showStatus();
+    break;
+  case 'help':
+  case '-h':
+  case '--help':
+    showHelp();
+    break;
+  default:
+    console.error(`Unknown command: ${command}`);
+    showHelp();
+    process.exit(1);
+}
