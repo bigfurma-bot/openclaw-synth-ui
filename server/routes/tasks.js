@@ -4,11 +4,11 @@ import { Router } from 'express';
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+import os from 'os';
 import { fileURLToPath } from 'url';
 import { broadcastEvent } from '../sse.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const TASKS_FILE = path.join(__dirname, '..', '..', 'tasks.json');
+const TASKS_FILE = path.join(os.homedir(), 'documents', 'workspace', 'tasks.json');
 
 const router = Router();
 

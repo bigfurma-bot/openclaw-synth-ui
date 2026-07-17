@@ -17,6 +17,7 @@ const SKILL_EMOJI = {
 
 async function findGlobalSkillsDir() {
   const candidates = [
+    path.join(os.homedir(), '.npm-global', 'lib', 'node_modules', 'openclaw', 'skills'),
     '/opt/homebrew/lib/node_modules/openclaw/skills',
     '/usr/local/lib/node_modules/openclaw/skills',
     '/usr/lib/node_modules/openclaw/skills',
@@ -50,7 +51,7 @@ router.get('/skills', async (req, res) => {
   const skills = [];
   const seen = new Set();
 
-  const userDir = path.join(os.homedir(), '.openclaw', 'workspace', 'skills');
+  const userDir = path.join(os.homedir(), 'documents', 'workspace', 'skills');
   try {
     const entries = await readdir(userDir, { withFileTypes: true });
     for (const entry of entries) {
