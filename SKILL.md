@@ -4,6 +4,8 @@ description: SYNTH-style HUD web interface for OpenClaw agents. Interactive Thre
 metadata: {"openclaw":{"emoji":"🦾","version":"1.0.3","requires":{"bins":["node","npm"]},"homepage":"https://github.com/bigfurma-bot/openclaw-synth-ui"}}
 ---
 
+> **Based on [JARVIS UI](https://github.com/jincocodev/openclaw-jarvis-ui) by [Jincoco](https://github.com/jincocodev) — the original OpenClaw HUD interface. Forked with permission for continued development as SYNTH UI.**
+
 # # 🧬 SYNTH UI
 
 A SYNTH-style HUD interface for your OpenClaw agent.

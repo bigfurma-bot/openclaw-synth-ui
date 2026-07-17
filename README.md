@@ -1,3 +1,5 @@
+> **Based on [JARVIS UI](https://github.com/jincocodev/openclaw-jarvis-ui) by [Jincoco](https://github.com/jincocodev) — the original OpenClaw HUD interface. Forked with permission for continued development as SYNTH UI.**
+
 # # 🧬 SYNTH UI
 
 A SYNTH-style HUD dashboard for [OpenClaw](https://github.com/openclaw/openclaw) agents.
