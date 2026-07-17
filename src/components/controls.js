@@ -79,7 +79,7 @@ export function initControls() {
     resetPanelPositions();
     
     // 重置 Orb
-    if (window.__jarvisResetAnomaly) window.__jarvisResetAnomaly();
+    if (window.__synthResetAnomaly) window.__synthResetAnomaly();
     
     showNotification('ALL RESET TO DEFAULT');
   });

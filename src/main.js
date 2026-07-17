@@ -1,4 +1,4 @@
-// ── OpenClaw JARVIS UI — 主入口 ──
+// ── OpenClaw SYNTH UI — 主入口 ──
 
 // 設定載入（最先）
 import { loadConfig } from './config/config-loader.js';
@@ -27,6 +27,7 @@ import { initOrbMessages } from './components/orb-messages.js';
 import { initThoughtStream } from './components/thought-stream.js';
 import { initMobileToolbar } from './components/mobile-toolbar.js';
 import { initPowerSave, isPowerSave } from './components/powersave.js';
+import { toggleVoiceMode, isVoiceActive, setOnStateChange } from './components/voice.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
   // 載入設定
@@ -36,8 +37,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   initTheme();
 
   // 動態更新 HTML 中的個人化文字
-  document.title = config.name || 'JARVIS';
-  const agentName = config.agent?.name || 'JARVIS';
+  document.title = config.name || 'SYNTH';
+  const agentName = config.agent?.name || 'SYNTH';
   const chatLabel = document.querySelector('.terminal-panel.chat-panel .terminal-header span');
   if (chatLabel) chatLabel.textContent = `${agentName} CHAT`;
 
@@ -58,6 +59,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   initControls();
   initPowerSave();
   initSpectrumCollapse();
+
+  // Voice mode: mic button
+  const micBtn = document.getElementById('chat-mic');
+  if (micBtn) {
+    micBtn.addEventListener('click', toggleVoiceMode);
+    setOnStateChange((state) => {
+      if (state === 'listening') micBtn.classList.add('listening');
+      else micBtn.classList.remove('listening');
+      micBtn.title = state === 'listening' ? 'LISTENING...' : state === 'processing' ? 'PROCESSING...' : state === 'speaking' ? 'SPEAKING...' : 'VOICE INPUT';
+    });
+  }
   initSystemMonitor();
   initVisualizers();
   initTimestamp();
@@ -149,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   initScene();
   
   // 暴露 resetAnomaly 供 Controls 使用
-  window.__jarvisResetAnomaly = resetAnomaly;
+  window.__synthResetAnomaly = resetAnomaly;
   
   // 重新觸發主題，確保 Three.js 顏色同步
   initTheme();
@@ -165,7 +177,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     requestAnimationFrame(animate);
 
     // 頁面隱藏時完全暫停
-    if (window.__jarvisHiddenPause?.()) return;
+    if (window.__synthHiddenPause?.()) return;
 
     // 省電模式：限制 15fps
     if (isPowerSave()) {
@@ -209,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     hiddenPause = document.hidden;
   });
   // 暴露給 animate loop
-  window.__jarvisHiddenPause = () => hiddenPause;
+  window.__synthHiddenPause = () => hiddenPause;
 });
 
 // PWA Service Worker 註冊

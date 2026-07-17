@@ -1,55 +1,45 @@
 {
-  "name": "JARVIS",
-  "nameEn": "JARVIS",
-  "title": "OPENCLAW.JARVIS",
+  "name": "Kira",
+  "nameEn": "Kira",
+  "title": "KIRA LEAD AGENT",
   "status": "ONLINE",
-  "model": "GITHUB-COPILOT / CLAUDE-OPUS-4.6",
-  "provider": "GITHUB-COPILOT",
-  "contextSize": 200000,
+  "model": "GEMMA 4 / DEEPSEEK-V4",
+  "provider": "OLLAMA / OPENCODE",
+  "contextSize": 262000,
   "colors": {
-    "primary": "#ff4e42",
-    "secondary": "#c2362f",
-    "tertiary": "#ffb3ab",
+    "primary": "#00A86B",
+    "secondary": "#00754B",
+    "tertiary": "#66D9A0",
     "success": "#4ade80",
     "warning": "#fbbf24",
     "danger": "#ff4e42"
   },
   "skills": [
-    { "icon": "🎤", "name": "WHISPER", "status": "on" },
-    { "icon": "🐦", "name": "X-API", "status": "on" },
-    { "icon": "📧", "name": "GMAIL", "status": "on" },
-    { "icon": "📅", "name": "CALENDAR", "status": "on" },
-    { "icon": "🌤️", "name": "WEATHER", "status": "on" },
-    { "icon": "🔐", "name": "NORDVPN", "status": "off" }
+    { "icon": "🎤", "name": "TALK", "status": "on" },
+    { "icon": "🛠️", "name": "WORKBOARD", "status": "on" },
+    { "icon": "📝", "name": "MEMORY", "status": "on" },
+    { "icon": "🎬", "name": "CODY", "status": "on" },
+    { "icon": "🐙", "name": "GITHUB", "status": "on" },
+    { "icon": "🥦", "name": "HEALTHCHECK", "status": "on" }
   ],
   "tasks": [
-    { "text": "聊天視窗改造", "status": "done" },
-    { "text": "系統監控面板", "status": "done" },
-    { "text": "MODEL STATUS 面板", "status": "done" },
-    { "text": "動態背景動畫", "status": "done" },
-    { "text": "Tab 切換面板", "status": "done" },
-    { "text": "重構模組化", "status": "active" },
-    { "text": "Header 品牌化", "status": "pending" },
-    { "text": "Config 檔案架構", "status": "pending" },
-    { "text": "接入 OpenClaw API", "status": "pending" }
+    { "text": "Voice integration (Parakeet STT + Supertonic TTS)", "status": "active" },
+    { "text": "SYNTH UI customization", "status": "active" },
+    { "text": "Config compliance audit", "status": "done" },
+    { "text": "Self-improvement cycles", "status": "active" },
+    { "text": "Sub-agent team setup", "status": "done" }
   ],
   "schedule": [
-    { "time": "*/30 *", "name": "HEARTBEAT", "status": "on" },
-    { "time": "09:00", "name": "早安問候", "status": "on" },
-    { "time": "12:00", "name": "信箱檢查", "status": "on" },
-    { "time": "18:00", "name": "天氣預報", "status": "off" }
+    { "time": "14:00", "name": "HEARTBEAT", "status": "on" },
+    { "time": "14:00", "name": "IMPROVEMENT CYCLE", "status": "on" },
+    { "time": "*/48h", "name": "SURPRISE CYCLE", "status": "on" }
   ],
   "memories": [
-    "📋 JARVIS UI Tab 切換面板",
-    "🎨 動態背景呼吸動畫",
-    "📊 Model Status 面板完成",
-    "💻 System Monitor 上線",
-    "💬 聊天視窗改造完成"
+    "🕶️ Kira — lead agent, project manager vibe, snarky streak",
+    "🎤 Voice stack: Parakeet STT + Supertonic TTS (local, CPU)",
+    "🐙 GitHub & coding via Cody/opencode-core",
+    "🏠 Workspace: Linux WSL2, Kyiv timezone",
+    "📊 Config compliance audit complete (Jul 2026)"
   ],
-  "demoTracks": [
-    { "label": "MERKABA", "url": "./assets/audio/Merkaba.mp3" },
-    { "label": "DHAMIKA", "url": "./assets/audio/Dhamika.mp3" },
-    { "label": "VACANT", "url": "./assets/audio/Vacant.mp3" },
-    { "label": "LXSTNGHT", "url": "./assets/audio/lxstnght-back_1.mp3" }
-  ]
+  "demoTracks": []
 }

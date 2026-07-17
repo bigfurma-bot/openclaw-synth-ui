@@ -34,7 +34,7 @@ router.post('/chat/upload', fileUpload.array('files', 10), async (req, res) => {
     const filePaths = [];
     for (const file of files) {
       const ext = path.extname(file.originalname) || '';
-      const destName = `jarvis-${Date.now()}-${Math.random().toString(36).slice(2, 6)}${ext}`;
+      const destName = `synth-${Date.now()}-${Math.random().toString(36).slice(2, 6)}${ext}`;
       const destPath = path.join(MEDIA_INBOUND, destName);
       await copyFile(file.path, destPath);
       await unlink(file.path);
@@ -48,7 +48,7 @@ router.post('/chat/upload', fileUpload.array('files', 10), async (req, res) => {
     }
 
     bumpMsgCount();
-    const idempotencyKey = `jarvis-upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const idempotencyKey = `synth-upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const result = await gwRequest('chat.send', {
       message: fullMessage, sessionKey: req.app.locals.sessionKey,
       idempotencyKey, deliver: false,
@@ -66,7 +66,7 @@ router.post('/chat', async (req, res) => {
 
   bumpMsgCount();
   try {
-    const idempotencyKey = `jarvis-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const idempotencyKey = `synth-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const result = await gwRequest('chat.send', {
       message, sessionKey: req.app.locals.sessionKey,
       idempotencyKey, deliver: false,

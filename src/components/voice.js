@@ -208,6 +208,7 @@ export async function startVoiceMode() {
     if (!vad) await initVAD();
     await vad.start();
     isVoiceMode = true;
+    window.__voiceActive = true;
     setState('listening');
   } catch (err) {
     console.error('[VOICE] 啟動失敗:', err);
@@ -224,6 +225,7 @@ export async function stopVoiceMode() {
   console.log('[VOICE] 關閉語音模式');
 
   isVoiceMode = false;
+  window.__voiceActive = false;
   if (vad) await vad.pause();
   stopPlayback();
   setState('idle');

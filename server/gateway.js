@@ -8,8 +8,8 @@ import crypto from 'node:crypto';
 
 const OPENCLAW_DIR = path.join(os.homedir(), '.openclaw');
 const IDENTITY_DIR = path.join(OPENCLAW_DIR, 'identity');
-const DEVICE_IDENTITY_PATH = process.env.JARVIS_DEVICE_IDENTITY_PATH || path.join(IDENTITY_DIR, 'jarvis-device.json');
-const DEVICE_AUTH_PATH = process.env.JARVIS_DEVICE_AUTH_PATH || path.join(IDENTITY_DIR, 'jarvis-device-auth.json');
+const DEVICE_IDENTITY_PATH = process.env.SYNTH_DEVICE_IDENTITY_PATH || path.join(IDENTITY_DIR, 'synth-device.json');
+const DEVICE_AUTH_PATH = process.env.SYNTH_DEVICE_AUTH_PATH || path.join(IDENTITY_DIR, 'synth-device-auth.json');
 
 const DEVICE_ROLE = 'operator';
 const DEFAULT_SCOPES = ['operator.admin', 'operator.approvals', 'operator.pairing'];
@@ -18,7 +18,7 @@ const CLIENT_ID = 'openclaw-control-ui';
 const CLIENT_VERSION = 'dev';
 const CLIENT_PLATFORM = 'node';
 const CLIENT_MODE = 'webchat';
-const CLIENT_INSTANCE = 'jarvis-backend-1';
+const CLIENT_INSTANCE = 'synth-backend-1';
 
 let gw = null;
 let gwReady = false;
@@ -284,7 +284,7 @@ function sendConnect() {
     method: 'connect',
     params: {
       minProtocol: 3,
-      maxProtocol: 3,
+      maxProtocol: 4,
       client: {
         id: CLIENT_ID,
         version: CLIENT_VERSION,
@@ -297,8 +297,8 @@ function sendConnect() {
       auth,
       device,
       caps: [],
-      userAgent: 'jarvis-backend/1.0',
-      locale: 'zh-TW',
+      userAgent: 'synth-backend/1.0',
+      locale: 'en-US',
     },
   }));
 }
@@ -307,7 +307,7 @@ function connect() {
   if (gw) { try { gw.close(); } catch {} }
   gwReady = false;
 
-  gw = new WebSocket(gatewayUrl, { origin: 'http://localhost:8001' });
+  gw = new WebSocket(gatewayUrl, [], { origin: 'http://localhost:9999', followRedirects: true });
 
   gw.on('open', () => {
     console.log('[GW] connected');
@@ -353,7 +353,7 @@ function connect() {
       if (msg.payload?.sessionKey === configSessionKey && onChatEvent) {
         const p = msg.payload;
         const u = p.message?.usage;
-        console.log(`[GW] jarvis: state=${p.state} model=${p.message?.model || '-'} usage=${u ? JSON.stringify(u) : 'none'}`);
+        console.log(`[GW] synth: state=${p.state} model=${p.message?.model || '-'} usage=${u ? JSON.stringify(u) : 'none'}`);
         onChatEvent(msg.payload);
       }
     }

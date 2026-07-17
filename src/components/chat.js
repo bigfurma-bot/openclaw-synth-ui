@@ -1,4 +1,4 @@
-// ── 聊天面板（REST + SSE 連接 JARVIS 後端） ──
+// ── 聊天面板（REST + SSE 連接 SYNTH 後端） ──
 
 import { addOrbMessage } from './orb-messages.js';
 import { updateSystemData } from './system-monitor.js';
@@ -175,8 +175,9 @@ let ttsEnabled = true;
 async function speakText(text) {
   if (!ttsEnabled || !text) return;
   try {
-    // 限制長度，避免 macOS say 卡太久（超過 500 字截斷）
-    const ttsText = text.length > 500 ? text.slice(0, 500) : text;
+    // Limit TTS text length to avoid timeouts with long responses
+    const MAX_CHARS = 5000;
+    const ttsText = text.length > MAX_CHARS ? text.slice(0, MAX_CHARS) : text;
 
     const res = await fetch('/api/tts', {
       method: 'POST',
@@ -288,7 +289,7 @@ async function loadHistory() {
 
 function connectSSE() {
   const evtSource = new EventSource('/api/events');
-  window.__jarvisSSE = evtSource;  // 共用給 tasks.js, schedule.js 等
+  window.__synthSSE = evtSource;  // 共用給 tasks.js, schedule.js 等
 
   evtSource.onmessage = (event) => {
     try {
@@ -367,9 +368,10 @@ function handleChatEvent(data) {
     // 回覆完成 → Orb 通知
     if (replyBuffer) {
       const cfg = getConfig();
-      const agentName = cfg?.agent?.name || 'JARVIS';
+      const agentName = cfg?.agent?.name || 'SYNTH';
       addOrbMessage(`${agentName}: ${replyBuffer}`);
-      speakText(replyBuffer);
+      // Skip TTS if voice mode is active (voice module handles its own audio)
+      if (!window.__voiceActive) speakText(replyBuffer);
 
       // 串流完成 → Markdown 渲染
       if (currentReplyLine) {
@@ -413,7 +415,7 @@ export function addChatLine(text, className, images = []) {
     const sender = document.createElement('span');
     sender.className = 'msg-sender';
     const cfg = getConfig();
-    sender.textContent = className.includes('user-line') ? 'YOU' : (cfg?.agent?.name || 'JARVIS').toUpperCase();
+    sender.textContent = className.includes('user-line') ? 'YOU' : (cfg?.agent?.name || 'SYNTH').toUpperCase();
     line.appendChild(sender);
 
     // 內容行（text + time）
@@ -651,7 +653,7 @@ export function initChat() {
 
   // 初始化系統訊息（config 已載入）
   const cfg = getConfig();
-  const agentName = cfg?.agent?.name || 'JARVIS';
+  const agentName = cfg?.agent?.name || 'SYNTH';
   const agentEmoji = cfg?.agent?.emoji || '🤖';
 
   // 直接顯示系統訊息，不用打字動畫

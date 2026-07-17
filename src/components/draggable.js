@@ -1,7 +1,7 @@
 // ── GSAP 面板拖曳系統 ──
 /* global Draggable */
 
-const STORAGE_KEY = 'jarvis-panel-positions';
+const STORAGE_KEY = 'synth-panel-positions';
 
 // 可拖曳面板的選擇器
 const PANEL_SELECTORS = [
@@ -118,7 +118,7 @@ export async function initDraggablePanels() {
 
   await waitForDraggable();
   if (typeof Draggable === 'undefined') {
-    console.warn('[JARVIS] GSAP Draggable not loaded, skipping drag');
+    console.warn('[SYNTH] GSAP Draggable not loaded, skipping drag');
     return;
   }
 

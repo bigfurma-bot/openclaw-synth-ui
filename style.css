@@ -2,13 +2,13 @@
 
 :root {
   /* 主題色相 (由 theme.js 動態設定) */
-  --hue: 5; /* 預設紅色 */
+  --hue: 158; /* 預設青綠 */
   
   /* RGB 分量 (由 theme.js 動態計算) */
-  --accent-r: 255;
-  --accent-g: 78;
-  --accent-b: 66;
-  --accent-rgb: 255, 78, 66;
+  --accent-r: 0;
+  --accent-g: 168;
+  --accent-b: 107;
+  --accent-rgb: 0, 168, 107;
   
   /* HSL 驅動的 accent 顏色 */
   --accent-primary: hsl(var(--hue), 100%, 63%);
@@ -1128,6 +1128,39 @@ textarea {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
   background: rgba(var(--accent-rgb), 0.15);
+}
+
+.chat-mic-btn {
+  flex: 1;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--accent-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-mic-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(var(--accent-rgb), 0.1);
+}
+
+.chat-mic-btn.listening {
+  border-color: var(--danger, #ff4e42);
+  color: var(--danger, #ff4e42);
+  background: rgba(255, 78, 66, 0.15);
+  animation: mic-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 78, 66, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 78, 66, 0); }
 }
 
 .chat-send-btn {

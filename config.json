@@ -1,9 +1,9 @@
 {
-  "name": "JARVIS",
+  "name": "Kira",
   "agent": {
-    "name": "JARVIS",
-    "emoji": "🤖",
-    "sessionKey": "agent:main:main",
+    "name": "Kira",
+    "emoji": "🕶️",
+    "sessionKey": "agent:main:synth",
     "skills": []
   },
   "server": {
@@ -11,14 +11,11 @@
     "gatewayUrl": "ws://127.0.0.1:18789"
   },
   "tts": {
-    "voice": "Samantha",
-    "maxChars": 500,
-    "engine": "edge",
-    "edgeVoice": "en-US-AriaNeural",
-    "edgeVoiceAlt": "zh-TW-HsiaoChenNeural"
+    "voice": "F4",
+    "engine": "supertonic"
   },
   "theme": {
-    "accentPrimary": "#ff4e42",
-    "accentSecondary": "#c0392b"
+    "accentPrimary": "#00A86B",
+    "accentSecondary": "#00754B"
   }
 }

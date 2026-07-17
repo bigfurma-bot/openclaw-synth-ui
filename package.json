@@ -1,7 +1,7 @@
 {
-  "name": "openclaw-jarvis-ui",
+  "name": "openclaw-synth-ui",
   "version": "1.0.3",
-  "description": "這是 OpenClaw 的互動介面原型（JARVIS 風格 HUD）。 以 CodePen yyyRgry 為基礎，已**完整本地化離線**，可作為後續互動 UI 的雛形。",
+  "description": "OpenClaw SYNTH UI \u2014 an interactive HUD dashboard for OpenClaw agents. Based on CodePen yyyRgry, fully localized offline.",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"node --env-file=.env server/index.js\" \"npx vite --port 8001 --host\"",
@@ -12,11 +12,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jincocodev/openclaw-jarvis-ui-ui.git"
+    "url": "git+https://github.com/bigfurma-bot/openclaw-synth-ui.git"
   },
   "keywords": [
     "openclaw",
-    "jarvis",
+    "synth",
     "dashboard",
     "hud",
     "threejs",
@@ -26,9 +26,9 @@
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/jincocodev/openclaw-jarvis-ui-ui/issues"
+    "url": "https://github.com/bigfurma-bot/openclaw-synth-ui/issues"
   },
-  "homepage": "https://github.com/jincocodev/openclaw-jarvis-ui-ui#readme",
+  "homepage": "https://github.com/bigfurma-bot/openclaw-synth-ui#readme",
   "devDependencies": {
     "concurrently": "^9.2.1",
     "vite": "^7.3.1"

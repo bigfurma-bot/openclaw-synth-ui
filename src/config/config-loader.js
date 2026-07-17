@@ -19,7 +19,7 @@ export async function loadConfig() {
     const { default: agent } = await import('./agent.json', { with: { type: 'json' } });
     _config = { name: agent.title, agent: { name: agent.name, emoji: '🌸', skills: agent.skills.map(s => s.name) }, theme: {} };
   } catch {
-    _config = { name: 'JARVIS', agent: { name: 'JARVIS', emoji: '🤖', skills: [] }, theme: {} };
+    _config = { name: 'SYNTH', agent: { name: 'SYNTH', emoji: '🤖', skills: [] }, theme: {} };
   }
 
   return _config;

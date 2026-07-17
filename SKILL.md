@@ -1,12 +1,12 @@
 ---
-name: jarvis-ui
-description: JARVIS-style HUD web interface for OpenClaw agents. Interactive Three.js orb with agent state visualization, real-time chat via Gateway WebSocket, audio spectrum analyzer, system monitor, and TTS. Use when you want a visual dashboard for your OpenClaw agent.
-metadata: {"openclaw":{"emoji":"🦾","version":"1.0.3","requires":{"bins":["node","npm"]},"homepage":"https://github.com/jincocodev/openclaw-jarvis-ui"}}
+name: synth-ui
+description: SYNTH-style HUD web interface for OpenClaw agents. Interactive Three.js orb with agent state visualization, real-time chat via Gateway WebSocket, audio spectrum analyzer, system monitor, and TTS. Use when you want a visual dashboard for your OpenClaw agent.
+metadata: {"openclaw":{"emoji":"🦾","version":"1.0.3","requires":{"bins":["node","npm"]},"homepage":"https://github.com/bigfurma-bot/openclaw-synth-ui"}}
 ---
 
-# 🦾 JARVIS UI
+# # 🧬 SYNTH UI
 
-A JARVIS-style HUD interface for your OpenClaw agent.
+A SYNTH-style HUD interface for your OpenClaw agent.
 
 ## Install
 
@@ -16,7 +16,7 @@ A JARVIS-style HUD interface for your OpenClaw agent.
 
 Gateway token is auto-detected from `~/.openclaw/openclaw.json`.
 
-> **⚠️ Remote/non-localhost access:** If JARVIS server is accessed from a different machine (not localhost), add this to your `~/.openclaw/openclaw.json`:
+> **⚠️ Remote/non-localhost access:** If SYNTH server is accessed from a different machine (not localhost), add this to your `~/.openclaw/openclaw.json`:
 > ```json
 > { "gateway": { "controlUi": { "allowInsecureAuth": true } } }
 > ```
@@ -40,8 +40,8 @@ cp config.json config.local.json
 
 | Field | Description | Default |
 |-------|-------------|---------|
-| `name` | Page title | JARVIS |
-| `agent.name` | Agent display name | JARVIS |
+| `name` | Page title | SYNTH |
+| `agent.name` | Agent display name | SYNTH |
 | `agent.emoji` | Agent emoji | 🤖 |
 | `agent.sessionKey` | OpenClaw session key | agent:main:main |
 | `server.port` | Server port | 9999 |
@@ -51,7 +51,7 @@ cp config.json config.local.json
 
 ```bash
 npm i -g pm2
-pm2 start server/index.js --name jarvis --node-args="--env-file=.env"
+pm2 start server/index.js --name synth --node-args="--env-file=.env"
 pm2 save
 ```
 

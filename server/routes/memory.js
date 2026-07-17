@@ -6,8 +6,9 @@ import os from 'os';
 import path from 'path';
 
 const router = Router();
-const MEMORY_DIR = path.join(os.homedir(), '.openclaw', 'workspace', 'memory');
-const MEMORY_FILE = path.join(os.homedir(), '.openclaw', 'workspace', 'MEMORY.md');
+const WORKSPACE = process.env.WORKSPACE_DIR || '/home/prime/documents/workspace';
+const MEMORY_DIR = path.join(WORKSPACE, 'memory');
+const MEMORY_FILE = path.join(WORKSPACE, 'MEMORY.md');
 
 router.get('/memory', async (req, res) => {
   const limit = parseInt(req.query.limit) || 7;
@@ -40,7 +41,7 @@ router.get('/memory', async (req, res) => {
         for (const line of content.split('\n')) {
           const match = line.match(/^## (.+)/);
           if (match) {
-            topics.push(match[1].trim().replace(/^JARVIS UI\s*[—–-]\s*/, ''));
+            topics.push(match[1].trim().replace(/^SYNTH UI\s*[—–-]\s*/, ''));
           }
         }
       } catch {}

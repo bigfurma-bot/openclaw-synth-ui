@@ -50,7 +50,7 @@ export function setThemeHue(hue) {
   root.style.setProperty('--accent-tertiary-rgb', `${tertiary.r}, ${tertiary.g}, ${tertiary.b}`);
   
   // 儲存到 localStorage
-  localStorage.setItem('jarvis-theme-hue', hue);
+  localStorage.setItem('synth-theme-hue', hue);
   
   // 通知所有模組更新
   window.dispatchEvent(new CustomEvent('theme-change', { 
@@ -68,8 +68,8 @@ export function setThemeHue(hue) {
  * @returns {number} 色相值
  */
 export function getThemeHue() {
-  const stored = localStorage.getItem('jarvis-theme-hue');
-  return stored ? parseInt(stored, 10) : 5; // 預設紅色
+  const stored = localStorage.getItem('synth-theme-hue');
+  return stored ? parseInt(stored, 10) : 158; // 預設青綠
 }
 
 /**
@@ -119,10 +119,11 @@ export function initTheme() {
 
 // 預設色板
 export const THEME_PRESETS = [
-  { name: '紅色', emoji: '🔴', hue: 5 },
-  { name: '橙色', emoji: '🟠', hue: 30 },
-  { name: '綠色', emoji: '🟢', hue: 140 },
-  { name: '青色', emoji: '🩵', hue: 180 },
-  { name: '藍色', emoji: '🔵', hue: 220 },
-  { name: '紫色', emoji: '🟣', hue: 270 }
+  { name: 'Jade',   emoji: '🟢', hue: 158 },
+  { name: 'Red',    emoji: '🔴', hue: 5 },
+  { name: 'Orange', emoji: '🟠', hue: 30 },
+  { name: 'Green',  emoji: '🟢', hue: 140 },
+  { name: 'Cyan',   emoji: '🩵', hue: 180 },
+  { name: 'Blue',   emoji: '🔵', hue: 220 },
+  { name: 'Purple', emoji: '🟣', hue: 270 }
 ];

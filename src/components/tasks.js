@@ -320,7 +320,7 @@ function bindEvents(container) {
 function listenSSE() {
   // 共用 chat.js 建立的 SSE 連線
   const tryBind = () => {
-    const source = window.__jarvisSSE;
+    const source = window.__synthSSE;
     if (!source) { setTimeout(tryBind, 1000); return; }
     source.addEventListener('message', (e) => {
       try {

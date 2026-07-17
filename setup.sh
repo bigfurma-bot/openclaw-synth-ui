@@ -1,5 +1,5 @@
 #!/bin/bash
-# ── JARVIS UI 安裝 ──
+# ── SYNTH UI 安裝 ──
 # 用法: ./setup.sh
 
 set -e
@@ -10,7 +10,7 @@ CYAN='\033[0;36m'
 DIM='\033[2m'
 NC='\033[0m'
 
-echo -e "${CYAN}🦾 JARVIS UI Setup${NC}"
+echo -e "${CYAN}🧬 SYNTH UI Setup${NC}"
 echo ""
 
 # 檢查依賴
@@ -75,9 +75,9 @@ echo "  3. (Optional) Customize your agent:"
 echo -e "     ${DIM}cp config.json config.local.json${NC}"
 echo -e "     ${DIM}# Edit config.local.json — change name, emoji, port, etc.${NC}"
 echo ""
-echo -e "${DIM}For production (auto-restart): npm i -g pm2 && pm2 start server/index.js --name jarvis --node-args=\"--env-file=.env\"${NC}"
+echo -e "${DIM}For production (auto-restart): npm i -g pm2 && pm2 start server/index.js --name synth --node-args=\"--env-file=.env\"${NC}"
 echo ""
-echo -e "${CYAN}🦾 Enjoy your JARVIS!${NC}"
+echo -e "${CYAN}🦾 Enjoy your SYNTH!${NC}"
 echo ""
 echo -e "${DIM}⚠️  Remote access? Add to ~/.openclaw/openclaw.json:${NC}"
 echo -e "${DIM}   { \"gateway\": { \"controlUi\": { \"allowInsecureAuth\": true } } }${NC}"

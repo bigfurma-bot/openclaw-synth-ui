@@ -1,10 +1,10 @@
-# 🦾 JARVIS UI
+# # 🧬 SYNTH UI
 
-A JARVIS-style HUD dashboard for [OpenClaw](https://github.com/openclaw/openclaw) agents.
+A SYNTH-style HUD dashboard for [OpenClaw](https://github.com/openclaw/openclaw) agents.
 
 Interactive 3D orb that visualizes your agent's state in real-time — thinking, responding, idle — with live chat, system monitoring, and audio visualization.
 
-![JARVIS UI Preview](assets/images/desktop-red.png)
+![SYNTH UI Preview](assets/images/desktop-red.png)
 
 ### Theme Variants
 
@@ -88,16 +88,16 @@ Responsive UI with touch gestures.
 
 ### From ClawHub
 ```bash
-npx clawhub install jarvis-ui
-cd skills/jarvis-ui
+npx clawhub install synth-ui
+cd skills/synth-ui
 ./setup.sh   # auto-detects Gateway token
 node --env-file=.env server/index.js
 ```
 
 ### From GitHub
 ```bash
-git clone https://github.com/jincocodev/openclaw-jarvis-ui.git
-cd openclaw-jarvis-ui
+git clone https://github.com/bigfurma-bot/openclaw-synth-ui.git
+cd openclaw-synth-ui
 ./setup.sh   # auto-detects Gateway token
 node --env-file=.env server/index.js
 ```
@@ -106,7 +106,7 @@ Open `http://localhost:9999`
 
 ### ⚠️ Remote Access (non-localhost)
 
-If running JARVIS on a remote server (not localhost), OpenClaw Gateway requires a secure context. Add this to `~/.openclaw/openclaw.json`:
+If running SYNTH on a remote server (not localhost), OpenClaw Gateway requires a secure context. Add this to `~/.openclaw/openclaw.json`:
 
 ```json
 { "gateway": { "controlUi": { "allowInsecureAuth": true } } }
@@ -155,8 +155,8 @@ cp config.json config.local.json
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `name` | Dashboard title | `"JARVIS"` |
-| `agent.name` | Agent display name | `"JARVIS"` |
+| `name` | Dashboard title | `"SYNTH"` |
+| `agent.name` | Agent display name | `"SYNTH"` |
 | `agent.emoji` | Agent emoji | `"🤖"` |
 | `agent.sessionKey` | OpenClaw session to connect | `"agent:main:main"` |
 | `server.port` | Server port | `9999` |
@@ -191,7 +191,7 @@ Full list: `python3 -m edge_tts --list-voices`
 ```bash
 npm i -g pm2
 npm run build
-pm2 start server/index.js --name jarvis --node-args="--env-file=.env"
+pm2 start server/index.js --name synth --node-args="--env-file=.env"
 pm2 save
 ```
 

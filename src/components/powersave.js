@@ -5,7 +5,7 @@ import { showNotification } from './notifications.js';
 let powerSaveEnabled = false;
 let onPowerSaveChange = null;
 
-const POWERSAVE_KEY = 'jarvis-powersave';
+const POWERSAVE_KEY = 'synth-powersave';
 
 export function isPowerSave() { return powerSaveEnabled; }
 

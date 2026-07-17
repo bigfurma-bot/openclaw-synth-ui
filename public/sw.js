@@ -1,5 +1,5 @@
 // Service Worker — 最小版，支援離線 shell
-const CACHE_NAME = 'jarvis-v3';
+const CACHE_NAME = 'synth-v1';
 const SHELL = ['/', '/index.html'];
 
 self.addEventListener('install', (e) => {

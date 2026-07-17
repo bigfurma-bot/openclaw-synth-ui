@@ -1,4 +1,4 @@
-// ── TTS Routes: /api/tts, /api/tts/engines, /api/tts/engine ──
+// ── TTS Routes: /api/tts ──
 
 import { Router } from 'express';
 import { getEngines, setEngine, synthesizeToResponse } from '../tts.js';

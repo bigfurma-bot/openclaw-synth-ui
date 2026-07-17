@@ -1,4 +1,4 @@
-// ── JARVIS 後端入口 ──
+// ── SYNTH 後端入口 ──
 
 import express from 'express';
 import path from 'path';
@@ -34,7 +34,7 @@ try {
 
 const GATEWAY_URL = process.env.GATEWAY_URL || config.server.gatewayUrl;
 const GATEWAY_TOKEN = process.env.GATEWAY_TOKEN;
-if (!GATEWAY_TOKEN) { console.error('[JARVIS] GATEWAY_TOKEN env is required'); process.exit(1); }
+if (!GATEWAY_TOKEN) { console.error('[SYNTH] GATEWAY_TOKEN env is required'); process.exit(1); }
 const PORT = process.env.PORT || config.server.port;
 const SERVE_STATIC = process.env.SERVE_STATIC !== 'false';
 const SESSION_KEY = config.agent.sessionKey;
@@ -81,6 +81,6 @@ initGateway({ url: GATEWAY_URL, token: GATEWAY_TOKEN, sessionKey: SESSION_KEY, o
 startSystemMonitor();
 
 app.listen(PORT, () => {
-  console.log(`[JARVIS] API server on http://localhost:${PORT}`);
-  if (SERVE_STATIC) console.log(`[JARVIS] Serving static files from dist/`);
+  console.log(`[SYNTH] API server on http://localhost:${PORT}`);
+  if (SERVE_STATIC) console.log(`[SYNTH] Serving static files from dist/`);
 });
