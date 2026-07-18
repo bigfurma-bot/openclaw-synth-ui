@@ -34,6 +34,13 @@
 
   <div class="notification" id="notification">Anomaly detected</div>
 
+  <!-- notification history dropdown -->
+  <div class="notif-bell" id="notif-bell"><span class="notif-icon">!</span></div>
+  <div class="notif-panel" id="notif-panel" style="display:none;">
+    <div class="notif-panel-header">NOTIFICATIONS</div>
+    <div class="notif-list" id="notif-list"></div>
+  </div>
+
   <div id="three-container"></div>
 
   <div class="grid-overlay"></div>
@@ -414,6 +421,14 @@
           </div>
           <input type="range" min="1" max="10" value="5" step="0.1" class="slider" id="sensitivity-slider">
         </div>
+        <div class="audio-volume" style="flex: 1;">
+          <div class="audio-sensitivity-label">
+            <span>VOLUME</span>
+            <span class="audio-sensitivity-value" id="volume-value">100%</span>
+          </div>
+          <input type="range" min="0" max="100" value="100" step="1" class="slider" id="volume-slider">
+        </div>
+        <button class="audio-stop-btn" id="audio-stop" title="STOP">⏹</button>
       </div>
     </div>
     </div><!-- /spectrum-body -->
@@ -423,6 +438,7 @@
   <script src="./vendor/gsap/Draggable.min.js"></script>
   <script src="./vendor/gsap/InertiaPlugin.min.js"></script>
   <script src="./vendor/gsap/Physics2DPlugin.min.js"></script>
+  <div class="ambient-toggle" id="ambient-toggle" title="TOGGLE AMBIENT MODE">▼</div>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

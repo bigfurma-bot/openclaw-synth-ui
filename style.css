@@ -753,6 +753,186 @@ textarea {
   font-size: 0.875rem;
 }
 
+/* ── Notification History Dropdown ── */
+.notif-bell {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 15;
+  cursor: default;
+  opacity: 0.15;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.notif-bell.has-new {
+  cursor: pointer;
+  opacity: 1;
+  pointer-events: auto;
+  width: 28px;
+  height: 28px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--accent-primary);
+}
+.notif-bell.has-new:hover {
+  border-color: var(--accent-primary);
+  background: var(--panel-highlight);
+}
+.notif-icon {
+  transform: translateX(-1px);
+  line-height: 1;
+}
+
+.notif-bell.has-new::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+.notif-panel {
+  position: fixed;
+  top: 54px;
+  right: 20px;
+  width: 320px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 5px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 110;
+  pointer-events: auto;
+}
+.notif-panel-header {
+  padding: 0.5rem 0.625rem;
+  font-size: 0.65rem;
+  color: var(--accent-primary);
+  border-bottom: 1px solid var(--panel-border);
+  position: sticky;
+  top: 0;
+  background: inherit;
+}
+.notif-item {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.35;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item .notif-time {
+  font-size: 0.5rem;
+  opacity: 0.35;
+  margin-right: 0.5rem;
+}
+.notif-item.error { color: #ff4e42; }
+.notif-item.success { color: #4ade80; }
+
+/* ── Audio Volume + Stop ── */
+.audio-volume {
+  margin-left: 0.5rem;
+}
+.audio-stop-btn {
+  flex: 0 0 2.5rem;
+  padding: 0.5rem 0;
+  background: var(--panel-highlight);
+  border: 1px solid var(--panel-border);
+  color: var(--accent-primary);
+  font-size: 0.9rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+}
+.audio-stop-btn:hover {
+  background: rgba(255, 78, 66, 0.15);
+  border-color: #ff4e42;
+  color: #ff4e42;
+}
+.audio-stop-btn:active {
+  background: rgba(255, 78, 66, 0.3);
+}
+
+/* ── Ambient Mode ── */
+.ambient-toggle {
+  position: fixed;
+  bottom: 12px;
+  right: 20px;
+  z-index: 200;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.45;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: auto;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  line-height: 1;
+  user-select: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.ambient-toggle:hover {
+  opacity: 0.85;
+  border-color: var(--accent-primary);
+  background: var(--panel-highlight);
+}
+.ambient-toggle.active {
+  color: var(--accent-primary);
+  opacity: 0.7;
+  border-color: var(--accent-primary);
+  background: var(--panel-highlight);
+  transform: rotate(180deg);
+}
+
+/* Transition class added/removed by ambient.js to avoid fighting drag */
+.ambient-transition .data-panel,
+.ambient-transition .terminal-panel,
+.ambient-transition .spectrum-analyzer,
+.ambient-transition .notif-bell,
+.ambient-transition .notif-panel {
+  transition: opacity 0.4s ease;
+}
+
+/* Ambient mode: hide panels */
+.ambient-mode .data-panel,
+.ambient-mode .terminal-panel,
+.ambient-mode .spectrum-analyzer,
+.ambient-mode .notif-bell,
+.ambient-mode .notif-panel {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .notification {
   position: fixed;
   top: 20px;

@@ -10,6 +10,7 @@ function addTerminalMessage(message, isCommand = false) {
 let audioContext = null;
 let audioAnalyser = null;
 let audioSource = null;
+let gainNode = null;
 let audioData;
 let frequencyData;
 let isAudioInitialized = false;
@@ -18,6 +19,7 @@ let audioContextStarted = false;
 let audioSourceConnected = false;
 let currentAudioElement = null;
 let currentAudioSrc = null;
+let currentVolume = 1.0;
 let onZoomCamera = null;
 
 export function getAudioData() { return audioData; }
@@ -37,7 +39,9 @@ export function initAudio() {
     audioAnalyser.smoothingTimeConstant = 0.8;
     audioData = new Uint8Array(audioAnalyser.frequencyBinCount);
     frequencyData = new Uint8Array(audioAnalyser.frequencyBinCount);
-    audioAnalyser.connect(audioContext.destination);
+    gainNode = audioContext.createGain();
+    gainNode.gain.value = currentVolume;
+    gainNode.connect(audioContext.destination);
     isAudioInitialized = true;
     addTerminalMessage('AUDIO ANALYSIS SYSTEM INITIALIZED.');
     showNotification('AUDIO ANALYSIS SYSTEM ONLINE');
@@ -107,6 +111,23 @@ function createNewAudioElement() {
   return newAudioElement;
 }
 
+export function setVolume(level) {
+  currentVolume = Math.max(0, Math.min(1, level));
+  if (gainNode) gainNode.gain.value = currentVolume;
+}
+
+export function stopAudio() {
+  if (currentAudioElement) {
+    currentAudioElement.pause();
+    currentAudioElement.currentTime = 0;
+  }
+  isAudioPlaying = false;
+  if (onZoomCamera) onZoomCamera(false);
+  addTerminalMessage('AUDIO PLAYBACK STOPPED.');
+  showNotification('AUDIO STOPPED');
+  document.querySelectorAll('.demo-track-btn').forEach((btn) => btn.classList.remove('active'));
+}
+
 function setupAudioSource(audioElement) {
   try {
     if (!ensureAudioContextStarted()) {
@@ -118,6 +139,7 @@ function setupAudioSource(audioElement) {
       if (!audioSourceConnected) {
         audioSource = audioContext.createMediaElementSource(audioElement);
         audioSource.connect(audioAnalyser);
+        audioSource.connect(gainNode);
         audioSourceConnected = true;
       }
       return true;
@@ -325,6 +347,16 @@ export function initAudioControls() {
       addTerminalMessage('AUDIO PLAYBACK COMPLETE.');
     });
   }
+
+  // ── Volume slider ──
+  document.getElementById('volume-slider')?.addEventListener('input', function () {
+    const vol = parseFloat(this.value) / 100;
+    setVolume(vol);
+    document.getElementById('volume-value').textContent = Math.round(this.value) + '%';
+  });
+
+  // ── Stop button ──
+  document.getElementById('audio-stop')?.addEventListener('click', stopAudio);
 
   // 點擊頁面自動啟用音訊
   document.addEventListener('click', function () {

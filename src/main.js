@@ -27,6 +27,7 @@ import { initOrbMessages } from './components/orb-messages.js';
 import { initThoughtStream } from './components/thought-stream.js';
 import { initMobileToolbar } from './components/mobile-toolbar.js';
 import { initPowerSave, isPowerSave } from './components/powersave.js';
+import { initAmbientToggle } from './components/ambient.js';
 import { toggleVoiceMode, isVoiceActive, setOnStateChange } from './components/voice.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   initSchedule();
   initControls();
   initPowerSave();
+  initAmbientToggle();
   initSpectrumCollapse();
   
   // 初始化 MODEL CENTER（獨立模型面板）
