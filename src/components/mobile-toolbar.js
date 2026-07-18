@@ -7,6 +7,7 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;
 const panelMap = {
   'spectrum': '.spectrum-analyzer',
   'info-center': '.info-center',
+  'model-center': '.model-center',
   /* [DISABLED] COMMAND CENTER 已合併至 DATA CENTER
   'control': '.control-panel',
   */

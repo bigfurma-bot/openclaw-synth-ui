@@ -8,6 +8,7 @@ const PANEL_SELECTORS = [
   '.terminal-panel.chat-panel',
   '.spectrum-analyzer',
   '.info-center',
+  '.model-center',
 ];
 
 function waitForDraggable() {
@@ -139,6 +140,10 @@ export async function initDraggablePanels() {
   makePanelDraggable(
     document.querySelector('.info-center'),
     document.getElementById('info-center-handle')
+  );
+  makePanelDraggable(
+    document.querySelector('.model-center'),
+    document.getElementById('model-center-handle')
   );
 
   // 載入已保存的面板位置

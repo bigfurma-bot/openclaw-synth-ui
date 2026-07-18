@@ -308,6 +308,20 @@
     </div>
   </div>
 
+  <!-- MODEL CENTER（獨立模型面板） -->
+  <div class="data-panel model-center" style="position: absolute; top: 100px; right: 20px; z-index: 10;">
+    <div class="panel-header">
+      <span class="data-panel-title">MODEL CENTER</span>
+      <span class="drag-handle" id="model-center-handle">⋮⋮</span>
+    </div>
+    <div class="tab-bar">
+      <!-- provider tabs 由 JavaScript 動態生成 -->
+    </div>
+    <div class="panel-tabs-content">
+      <!-- provider tab content 由 JavaScript 動態生成 -->
+    </div>
+  </div>
+
   <!-- [DISABLED] COMMAND CENTER — 已合併至 DATA CENTER
   <div class="control-panel" style="top: 50%; left: 20px; transform: translateY(-50%);">
     <div class="panel-header">
@@ -332,6 +346,9 @@
     </button>
     <button class="mobile-toolbar-btn" data-panel="info-center" title="Data Center">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    </button>
+    <button class="mobile-toolbar-btn" data-panel="model-center" title="Model Center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     </button>
     <!-- [DISABLED] COMMAND CENTER 按鈕 — 已合併至 DATA CENTER
     <button class="mobile-toolbar-btn" data-panel="control" title="Command Center">

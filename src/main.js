@@ -59,6 +59,22 @@ document.addEventListener('DOMContentLoaded', async function () {
   initControls();
   initPowerSave();
   initSpectrumCollapse();
+  
+  // 初始化 MODEL CENTER（獨立模型面板）
+  const modelCenter = await import('./components/model-center.js');
+  modelCenter.setCallbacks({
+    onModel: (model) => {
+      // 更新系統狀態顯示中的模型名稱
+      const modelNameEl = document.getElementById('model-name');
+      if (modelNameEl) {
+        const shortName = model.split('/').pop().split(':')[0];
+        modelNameEl.textContent = shortName || model;
+      }
+      // 通知其他組件模型已更改
+      window.dispatchEvent(new CustomEvent('model-changed', { detail: { model } }));
+    }
+  });
+  modelCenter.initModelCenter();
 
   // Voice mode: mic button
   const micBtn = document.getElementById('chat-mic');
