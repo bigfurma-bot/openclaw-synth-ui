@@ -26,11 +26,11 @@ async function initVAD() {
     model: 'v5',
     baseAssetPath: '/vad/',
     onnxWASMBasePath: '/vad/',
-    positiveSpeechThreshold: 0.8,
-    negativeSpeechThreshold: 0.3,
-    minSpeechFrames: 5,
-    preSpeechPadFrames: 10,
-    redemptionFrames: 8,
+    positiveSpeechThreshold: 0.5,  // easier to detect speech (was 0.8)
+    negativeSpeechThreshold: 0.35, // harder to classify as silence (was 0.3)
+    minSpeechFrames: 3,            // faster speech start (was 5)
+    preSpeechPadFrames: 15,        // more pre-roll context (was 10)
+    redemptionFrames: 100,         // ~3s silence before ending utterance
 
     onSpeechStart: () => {
       console.log('[VOICE] 偵測到說話');
@@ -198,6 +198,33 @@ function waitPlaybackDone() {
   });
 }
 
+// ── Helper: play a short microphone-ready beep via Web Audio API ──
+
+function playBeep() {
+  return new Promise((resolve) => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.008);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.12);
+      setTimeout(() => {
+        ctx.close();
+        resolve();
+      }, 180);
+    } catch {
+      resolve(); // fail silently — beep is non-essential
+    }
+  });
+}
+
 // ── 公開 API ──
 
 export async function startVoiceMode() {
@@ -205,6 +232,9 @@ export async function startVoiceMode() {
   console.log('[VOICE] 啟動語音模式');
 
   try {
+    // Play a short beep to signal that the mic is about to open
+    await playBeep();
+
     if (!vad) await initVAD();
     await vad.start();
     isVoiceMode = true;

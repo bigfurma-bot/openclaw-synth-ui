@@ -141,11 +141,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         : (msgCount ? `${msgCount} MSGS` : '');
     };
 
-    // 初始化：從 server 拿 channel + 今日計數
+    // 初始化：從 server 拿 channel + 今日計數 + sessionKey
     fetch('/api/status').then(r => r.json()).then(d => {
       channelName = (d.channel || '').toUpperCase();
       msgCount = d.msgCount || 0;
       updateMeta();
+
+      // 顯示 session key 在 terminal header 中央
+      const sessionEl = document.getElementById('terminal-session');
+      if (sessionEl && d.sessionKey) {
+        const shortKey = d.sessionKey.length > 36
+          ? d.sessionKey.slice(0, 18) + '…' + d.sessionKey.slice(-16)
+          : d.sessionKey;
+        sessionEl.textContent = shortKey;
+      }
     }).catch(() => {});
 
     // 每次發訊息後更新計數

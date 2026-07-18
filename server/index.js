@@ -20,6 +20,7 @@ import skillsRoutes from './routes/skills.js';
 import memoryRoutes from './routes/memory.js';
 import scheduleRoutes from './routes/schedule.js';
 import voiceRoutes from './routes/voice.js';
+import modelsRoutes from './routes/models.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -38,6 +39,7 @@ if (!GATEWAY_TOKEN) { console.error('[SYNTH] GATEWAY_TOKEN env is required'); pr
 const PORT = process.env.PORT || config.server.port;
 const SERVE_STATIC = process.env.SERVE_STATIC !== 'false';
 const SESSION_KEY = config.agent.sessionKey;
+const VOICE_SESSION_KEY = config.agent.voiceSessionKey;
 const OC_CONFIG = path.join(os.homedir(), '.openclaw', 'openclaw.json');
 
 // ── Express ──
@@ -46,6 +48,7 @@ app.use(express.json());
 
 // 共享 sessionKey 供路由使用
 app.locals.sessionKey = SESSION_KEY;
+app.locals.voiceSessionKey = VOICE_SESSION_KEY;
 
 // ── SSE ──
 app.get('/api/events', (req, res) => {
@@ -67,6 +70,7 @@ app.use('/api', skillsRoutes);
 app.use('/api', memoryRoutes);
 app.use('/api', scheduleRoutes);
 app.use('/api', voiceRoutes);
+app.use('/api', modelsRoutes);
 
 // ── 靜態檔案 ──
 if (SERVE_STATIC) {
@@ -77,7 +81,7 @@ if (SERVE_STATIC) {
 
 // ── 初始化 ──
 initTTS(config.tts);
-initGateway({ url: GATEWAY_URL, token: GATEWAY_TOKEN, sessionKey: SESSION_KEY, onChat: broadcastChat });
+initGateway({ url: GATEWAY_URL, token: GATEWAY_TOKEN, sessionKey: SESSION_KEY, voiceSessionKey: VOICE_SESSION_KEY, onChat: broadcastChat });
 startSystemMonitor();
 
 app.listen(PORT, () => {

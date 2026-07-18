@@ -4,6 +4,7 @@
     "name": "Kira",
     "emoji": "🕶️",
     "sessionKey": "agent:main:synth",
+    "voiceSessionKey": "agent:voice:synth",
     "skills": []
   },
   "server": {
@@ -12,7 +13,14 @@
   },
   "tts": {
     "voice": "F4",
-    "engine": "supertonic"
+    "engine": "supertonic",
+    "voicesByLang": {
+      "en": "F4",
+      "ru": "F5"
+    },
+    "speed": 1.15,
+    "pauseMs": 800,
+    "endSilenceMs": 150
   },
   "theme": {
     "accentPrimary": "#00A86B",

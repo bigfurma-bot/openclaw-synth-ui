@@ -633,6 +633,22 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+}
+
+/* session display centered in terminal header */
+#terminal-session {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  white-space: nowrap;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
 }
 
 .panel-header {

@@ -23,7 +23,7 @@ export default function statusRoutes(config, ocConfigPath) {
         channel = Object.keys(channels).find(k => channels[k]?.enabled !== false) || Object.keys(channels)[0] || null;
       }
     } catch {}
-    res.json({ gateway: isReady(), sessionKey: getSessionKey(), channel, msgCount: getMsgCount() });
+    res.json({ gateway: isReady(), sessionKey: getSessionKey() || req.app.locals.sessionKey, channel, msgCount: getMsgCount() });
   });
 
   // Model Status

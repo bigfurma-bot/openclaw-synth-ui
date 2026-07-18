@@ -33,7 +33,8 @@ let gwConnectTimer = null;
 
 let gatewayUrl = '';
 let gatewayToken = '';
-let configSessionKey = null;  // config 定義的 session key
+let configSessionKey = null;  // config 定義的 session key (chat)
+let voiceSessionKey = null;   // config 定義的 voice session key
 let onChatEvent = null;  // 外部註冊的 chat 事件回呼
 
 // ── Device identity helpers (from OpenClaw gateway client) ──
@@ -218,10 +219,11 @@ try {
   console.error('[GW] device identity init failed:', err?.message || err);
 }
 
-export function initGateway({ url, token, sessionKey, onChat }) {
+export function initGateway({ url, token, sessionKey, voiceSessionKey: vsk, onChat }) {
   gatewayUrl = url;
   gatewayToken = token;
   configSessionKey = sessionKey;
+  voiceSessionKey = vsk || null;
   onChatEvent = onChat;
   connect();
 }
@@ -350,7 +352,7 @@ function connect() {
     }
 
     if (msg.type === 'event' && msg.event === 'chat') {
-      if (msg.payload?.sessionKey === configSessionKey && onChatEvent) {
+      if ((msg.payload?.sessionKey === configSessionKey || msg.payload?.sessionKey === voiceSessionKey) && onChatEvent) {
         const p = msg.payload;
         const u = p.message?.usage;
         console.log(`[GW] synth: state=${p.state} model=${p.message?.model || '-'} usage=${u ? JSON.stringify(u) : 'none'}`);

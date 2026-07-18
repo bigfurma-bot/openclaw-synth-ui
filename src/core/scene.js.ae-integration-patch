@@ -1,0 +1,339 @@
+--- /home/prime/documents/workspace/synth-ui/src/core/scene.js
++++ /home/prime/documents/workspace/synth-ui/src/core/scene.js
+@@ -1,5 +1,6 @@
+ // ── Three.js 場景 + Orb（異常物件）──
+ /* global gsap */
++/* global __AE_ANIMATION_METHOD__ */
+ 
+ import * as THREE from 'three';
+ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+@@ -30,6 +31,7 @@
+ let distortionAmount = 1.0;
+ let resolution = 32;
+ let clock = new THREE.Clock();
++let aeContainer = null;
+ let isDraggingAnomaly = false;
+ let anomalyVelocity = new THREE.Vector2(0, 0);
+ let anomalyTargetPosition = new THREE.Vector3(0, 0, 0);
+@@ -43,6 +45,7 @@
+ let defaultCameraPosition = new THREE.Vector3(0, window.innerWidth <= 768 ? 1.2 : 0, window.innerWidth <= 768 ? 14 : 10);
+ let zoomedCameraPosition = new THREE.Vector3(0, 0, 7);
+ let updateGlow = null;
++let aeAnimationType = 'lottie'; // Default, can be overridden
+ 
+ // 主題顏色（動態從 CSS 變數取得）
+ let themeColors = {
+@@ -70,6 +73,7 @@
+ export function setStreamIntensity(val) {
+   streamIntensity = val;
+ }
++let aeAnimationInstance = null;
+ 
+ // 監聽 chat.js 的狀態事件（避免循環依賴）
+ window.addEventListener('agent-state', (e) => setAgentState(e.detail));
+@@ -104,7 +108,7 @@
+ export function getAnomalyObject() { return anomalyObject; }
+ export function getClock() { return clock; }
+ 
+-// 取得 Orb 在螢幕上的 2D 投影座標
++// 取得 Orb 在螢幕上的 2D 投影座標 (now points to AE container)
+ export function getOrbScreenPosition() {
+   if (!anomalyObject || !camera) return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+   const pos = anomalyObject.position.clone();
+@@ -111,7 +115,7 @@
+   return {
+     x: (pos.x * 0.5 + 0.5) * window.innerWidth,
+     y: (-pos.y * 0.5 + 0.5) * window.innerHeight,
+-  };
++  };
+ }
+ 
+ export function setDistortion(val) {
+@@ -118,7 +122,7 @@
+   distortionAmount = val;
+   updateGlow = createAnomalyObject();
+ }
+-
++// Not used with AE animation - keeping for compatibility
+ export function setResolution(val) {
+   resolution = val;
+   updateGlow = createAnomalyObject();
+@@ -136,20 +140,20 @@
+   const targetPosition = zoomIn ? zoomedCameraPosition : defaultCameraPosition;
+   gsap.to(camera.position, {
+     x: targetPosition.x,
+-    y: targetPosition.y,
++    y: targetPosition.y,
+     z: targetPosition.z,
+     duration: 1.5,
+     ease: 'power2.inOut',
+     onUpdate: () => camera.lookAt(0, 0, 0),
+   });
+ }
+-
++// Background particles only - AE animation is HTML overlay
+ function createBackgroundParticles() {
+   const particlesGeometry = new THREE.BufferGeometry();
+   const particleCount = window.innerWidth <= 768 ? 1000 : 3000;
+@@ -187,7 +191,7 @@
+     colors[i * 3 + 2] = color.b;
+     sizes[i] = 0.05;
+   }
+-
++  
+   particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+   particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+   particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+@@ -218,7 +222,7 @@
+   const pointLight2 = new THREE.PointLight(themeColors.secondary, 1, 10);
+   pointLight2.position.set(-2, -2, -2);
+   scene.add(pointLight2);
+-
++  
+   updateGlow = createAnomalyObject();
+   updateParticles = createBackgroundParticles();
+   setupAnomalyDragging();
+@@ -245,7 +249,7 @@
+   // 初始化主題顏色
+   updateThemeColors();
+   
+-  // 監聽主題變更
++  // 監聽主題變更
+   window.addEventListener('theme-change', () => {
+     updateThemeColors();
+     // 重新建立物件以套用新顏色
+@@ -253,19 +257,25 @@
+     updateParticles = createBackgroundParticles();
+     // 更新 point lights
+     const lights = scene.children.filter(child => child instanceof THREE.PointLight);
+-    if (lights[0]) lights[0].color.setHex(themeColors.primary);
+-    if (lights[1]) lights[1].color.setHex(themeColors.secondary);
++    if (lights[0]) lights[0].color.setHex(themeColors.primary);
++    if (lights[1]) lights[1].color.setHex(themeColors.secondary);
+   });
+ }
+ 
+-function createAnomalyObject() {
++// AE ANIMATION FUNCTIONS
++function initAEAnimation() {
++  // Create container for AE animation
++  aeContainer = document.createElement('div');
++  aeContainer.id = 'ae-animation-container';
++  aeContainer.style.position = 'absolute';
++  aeContainer.style.top = '50%';
++  aeContainer.style.left = '50%';
++  aeContainer.style.transform = 'translate(-50%, -50%)';
++  aeContainer.style.width = '200px';
++  aeContainer.style.height = '200px';
++  aeContainer.style.pointerEvents = 'none';
++  aeContainer.style.zIndex = '10';
++  
++  const threeContainer = document.getElementById('three-container');
++  if (threeContainer && threeContainer.parentElement) {
++    threeContainer.parentElement.appendChild(aeContainer);
++  } else {
++    document.body.appendChild(aeContainer);
++  }
++  
++  // PLACEHOLDER - REPLACE WITH YOUR ACTUAL AE IMPLEMENTATION
++  aeContainer.innerHTML = `
++    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; 
++                background:radial-gradient(circle, rgba(0,168,107,0.1) 0%, transparent 70%); 
++                border:2px solid rgba(0,168,107,0.3); border-radius:50%;">
++      <div style="width:60px; height:60px; border:2px solid #00A86B; border-radius:50%; 
++                  border-top-color:transparent; animation:spin 2s linear infinite;"></div>
++    </div>
++    <style>
++      @keyframes spin {
++        to { transform: rotate(360deg); }
++      }
++    </style>
++  `;
++}
++
++function createAnomalyObject() {
+   if (anomalyObject) scene.remove(anomalyObject);
+   anomalyObject = new THREE.Group();
+   const radius = 2;
+@@ -280,11 +290,11 @@
+     uniforms: {
+       time: { value: 0 },
+       color: { value: new THREE.Color(themeColors.primary) },
+       audioLevel: { value: 0 },
+-      distortion: { value: distortionAmount },
++      // distortion: { value: distortionAmount }, // Not used with AE
+       agentActivity: { value: 0 },
+     },
+     vertexShader: `
+       uniform float time;
+       uniform float audioLevel;
+-      uniform float distortion;
++      // uniform float distortion; // Not used with AE
+       float agentActivity;
+       varying vec3 vNormal;
+       varying vec3 vPosition;
+@@ -360,7 +370,7 @@
+       }
+     }`;
+ 
+-  const outerSphere = new THREE.Mesh(outerGeometry, outerMaterial);
++  // const outerSphere = new THREE.Mesh(outerGeometry, outerMaterial); // REPLACED BY AE
+   anomalyObject.add(outerSphere);
+   scene.add(anomalyObject);
+ 
+@@ -373,7 +383,7 @@
+     uniforms: {
+       time: { value: 0 },
+       color: { value: new THREE.Color(themeColors.primary) },
+-      audioLevel: { value: 0 },
++      // audioLevel: { value: 0 }, // Not used with AE
+       agentActivity: { value: 0 },
+     },
+     vertexShader: `
+@@ -400,13 +410,13 @@
+       }
+     }`;
+ 
+-  const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
++  // const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial); // REPLACED BY AE
+   anomalyObject.add(glowSphere);
+ 
+   return function updateAnomaly(time, audioLevel) {
+-    // 計算動態 agent 強度
++    // 計算動態 agent 強度 (preserved for compatibility)
+     const elapsed = (performance.now() - agentStateStartTime) / 1000;
+     let targetActivity = 0;
+ 
+@@ -420,7 +430,7 @@
+       } else {
+         doneBloom = 0;
+       }
+-    // 平滑過渡（idle 回復慢一點更自然）
++    // 平滑過渡（idle 回復慢一點更自然）
+     const smoothSpeed = agentActivity === 0 ? 0.02 : 0.06;
+     agentActivitySmooth += (targetActivity - agentActivitySmooth) * smoothSpeed;
+ 
+@@ -441,7 +451,7 @@
+     outerMaterial.uniforms.audioLevel.value = audioLevel;
+     outerMaterial.uniforms.distortion.value = distortionAmount;
+     outerMaterial.uniforms.agentActivity.value = agentActivitySmooth;
+-    glowMaterial.uniforms.time.value = time;
++    // glowMaterial.uniforms.time.value = time; // Not used with AE
+     glowMaterial.uniforms.audioLevel.value = audioLevel;
+     glowMaterial.uniforms.agentActivity.value = agentActivitySmooth;
+   };
+@@ -454,7 +464,7 @@
+   function setupAnomalyDragging() {
+     const container = document.getElementById('three-container');
+     const raycaster = new THREE.Raycaster();
+-    const mouse = new THREE.Vector2();
++    // const mouse = new THREE.Vector2(); // Not used with AE
+     let isDragging = false;
+     let dragStartPosition = new THREE.Vector2();
+     anomalyOriginalPosition = new THREE.Vector3(0, 0, 0);
+@@ -482,7 +492,7 @@
+       }
+     }
+ 
+-    // Mouse events
++    // Mouse events (disabled - AE lets events pass through)
+     container.addEventListener('mousedown', onPointerDown);
+     container.addEventListener('mousemove', onPointerMove);
+     container.addEventListener('mouseup', onPointerUp);
+@@ -491,11 +501,11 @@
+     container.addEventListener('touchcancel', onPointerUp);
+   }
+ 
+-  function updateAnomalyPosition() {
++  function updateAnomalyPosition() {
+     if (!isDraggingAnomaly) {
+       anomalyVelocity.x *= 0.95;
+       anomalyVelocity.y *= 0.95;
+@@ -503,11 +513,11 @@
+         anomalyVelocity.y -= anomalyTargetPosition.y * springStrength;
+         if (Math.abs(anomalyTargetPosition.x) < 0.05 && Math.abs(anomalyTargetPosition.y) < 0.05) {
+           anomalyTargetPosition.set(0, 0, 0);
+-          anomalyVelocity.set(0, 0);
++          // anomalyVelocity.set(0, 0); // Not used with AE
+         }
+         const bounceThreshold = 3;
+         const bounceDamping = 0.8;
+@@ -525,7 +535,7 @@
+       }
+     }
+   }
+-
++  
+   anomalyObject.position.x += (anomalyTargetPosition.x - anomalyObject.position.x) * 0.2;
+   anomalyObject.position.y += (anomalyTargetPosition.y - anomalyObject.position.y) * 0.2;
+   if (!isDraggingAnomaly) {
+-    anomalyObject.rotation.x += anomalyVelocity.y * 0.01;
++    // anomalyObject.rotation.x += anomalyVelocity.y * 0.01; // Not used with AE
+     anomalyObject.rotation.y += anomalyVelocity.x * 0.01;
+   }
+ }
+@@ -537,7 +547,7 @@
+ export function resetAnomaly() {
+   distortionAmount = 1.0;
+   resolution = 32;
+-  updateGlow = createAnomalyObject();
++  updateGlow = createBackgroundParticles(); // Particles only, AE handled separately
+   anomalyTargetPosition.set(0, 0, 0);
+   anomalyVelocity.set(0, 0);
+   anomalyObject.position.set(0, 0, 0);
+@@ -565,14 +575,20 @@
+   controls.update();
+   const time = clock.getElapsedTime();
+   updateAnomalyPosition();
+-  if (updateGlow) updateGlow(time, audioLevel);
++  if (updateGlow) updateGlow(time); // Particles only
+   if (updateParticles) updateParticles(time);
+-  if (anomalyObject) {
+-    const audioRotationFactor = 1 + audioLevel * audioReactivity;
+-    anomalyObject.rotation.y += 0.005 * rotationSpeed * audioRotationFactor;
+-    anomalyObject.rotation.z += 0.002 * rotationSpeed * audioRotationFactor;
+-  }
++  // AE Animation Updates (placeholder - implement based on your export method)
++  // if (aeContainer && aeAnimationInstance) {
++  //   // Update AE animation based on audioLevel and agent state
++  //   // This would depend on your export format (Lottie, sequence, video)
++  // }
++  
++  // No 3D orb rotation since replaced by AE
++  
+   renderer.render(scene, camera);
+ }
+ 
++// Export AE container for external access if needed
++export function getAEContainer() { return aeContainer; }
++
+ export function onWindowResize(resizeCanvasCallback) {
+   camera.aspect = window.innerWidth / window.innerHeight;
+   camera.updateProjectionMatrix();
+   renderer.setSize(window.innerWidth, window.innerHeight);
+ 
+@@ -573,7 +589,7 @@
+   // 手機 ↔ 桌面切換時更新 camera 距離
+   const isMobile = window.innerWidth <= 768;
+   const newZ = isMobile ? 14 : 10;
+   const newY = isMobile ? 1.2 : 0;
+-  defaultCameraPosition.z = newZ;
++  // defaultCameraPosition.z = newZ; // Handled by CSS positioning
+   defaultCameraPosition.y = newY;
+   if (!isDraggingAnomaly) {
+-    camera.position.z = newZ;
++    // camera.position.z = newZ; // Handled by CSS positioning
+     camera.position.y = newY;
+   }
+ 
+@@ -602,3 +618,10 @@
+   // PWA Service Worker 註冊
+   if ('serviceWorker' in navigator) {
+     navigator.serviceWorker.register('/sw.js').catch(() => {});
+   }
++
++    // TEMPORARY: Initialize AE animation on load
++    // setTimeout(initAEAnimation, 1000);
++    // In production, call initAEAnimation() from main.js after DOM ready
++    // window.initAEAnimation = initAEAnimation;
+ }

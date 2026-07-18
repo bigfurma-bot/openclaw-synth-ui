@@ -8,7 +8,7 @@ import { readFile } from 'fs/promises';
 import { unlink } from 'fs/promises';
 import { gwRequest } from '../gateway.js';
 import { addVoiceHandler, removeVoiceHandler } from '../sse.js';
-import { ttsSentence, splitSentences } from '../tts.js';
+import { ttsSentence, splitSentences, resolveVoice, getPauseMs } from '../tts.js';
 
 const router = Router();
 const upload = multer({ dest: os.tmpdir(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -63,7 +63,7 @@ router.post('/voice', upload.single('audio'), async (req, res) => {
     msgCountToday++;
 
     const idempotencyKey = `voice-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const voice = 'F4';
+    const voice = resolveVoice(transcript, 'auto');
 
     const responseText = await new Promise((resolve, reject) => {
       let fullText = '';
@@ -75,15 +75,33 @@ router.post('/voice', upload.single('audio'), async (req, res) => {
       let ttsProcessing = Promise.resolve();
 
       const enqueueTts = (sentences) => {
-        ttsQueue.push(...sentences);
+        const _pauseMs = getPauseMs();
+        const _commaPauseMs = 350; // shorter pause at commas
+        // Further split each sentence on commas for natural rhythm
+        const chunks = [];
+        for (const sentence of sentences) {
+          const parts = sentence.split(/(?<=,)\s*/);
+          parts.forEach((part, i) => {
+            const t = part.trim();
+            if (t.length > 0) {
+              // Last part of a sentence gets the full pause; comma-separated parts get shorter pause
+              chunks.push({ text: t, pause: i < parts.length - 1 ? _commaPauseMs : _pauseMs });
+            }
+          });
+        }
+        ttsQueue.push(...chunks);
         ttsProcessing = ttsProcessing.then(async () => {
           while (ttsQueue.length > 0) {
-            const sentence = ttsQueue.shift();
+            const chunk = ttsQueue.shift();
             try {
-              const audioBuffer = await ttsSentence(sentence, voice);
+              const audioBuffer = await ttsSentence(chunk.text, voice);
               if (audioBuffer.length > 0) {
                 const base64 = audioBuffer.toString('base64');
-                send({ type: 'tts-chunk', audio: base64, contentType: 'audio/wav', text: sentence });
+                send({ type: 'tts-chunk', audio: base64, contentType: 'audio/wav', text: chunk.text });
+              }
+              // Pause after chunk: short at commas, full between sentences
+              if (ttsQueue.length > 0 && chunk.pause > 0) {
+                await new Promise(r => setTimeout(r, chunk.pause));
               }
             } catch (err) { console.error('[VOICE] TTS error:', err.message); }
           }
@@ -127,7 +145,7 @@ router.post('/voice', upload.single('audio'), async (req, res) => {
       addVoiceHandler(handler);
 
       gwRequest('chat.send', {
-        message: transcript, sessionKey: req.app.locals.sessionKey,
+        message: transcript, sessionKey: req.app.locals.voiceSessionKey || req.app.locals.sessionKey,
         idempotencyKey, deliver: false,
       }).catch((err) => { removeVoiceHandler(handler); reject(err); });
 
